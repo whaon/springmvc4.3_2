@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript"
+	src="../js/jquery-1.8.1.min.js"></script>
+<!-- <script type="text/javascript"
+	src="http://code.jquery.com/jquery-3.1.0.min.js"></script> -->
+</head>
+<script type="text/javascript">
+	$(function() {
+		var o = {
+			//myname : "tom",
+			input_name : "jerry",
+			age : 20,
+			birth: "2012-07-17 18:17:35",
+			weigth : 88.8
+		}; 
+		o = JSON.stringify(o);
+		var cnameUrl = "putjson/" + encodeURIComponent(encodeURIComponent("a48bc.cnc.com'"));
+		alert(cnameUrl);
+		//alert(JSON.stringify(o));
+		$.ajax({
+			type : "POST",
+			//url : "putjson/" + cname,
+			url : cnameUrl,
+			//url : "definitejson?key=vv",
+			data : o,
+			processData : false,
+
+			contentType: "application/json",
+			dataType : "json",
+			success : function(msg) {
+				//alert(msg);
+				$('#test').text(JSON.stringify(msg))
+			}
+		});
+
+	});
+</script>
+<body>
+	<div id="test"></div>
+</body>
+</html>
