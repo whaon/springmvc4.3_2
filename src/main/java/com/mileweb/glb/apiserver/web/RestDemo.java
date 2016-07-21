@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,6 +27,8 @@ import com.mileweb.glb.apiserver.entity.Dog;
 import com.mileweb.glb.apiserver.entity.SuccessInfo;
 import com.mileweb.glb.apiserver.exception.BizRuntimeException;
 import com.mileweb.glb.apiserver.exception.ExceptionWrapper;
+import com.mileweb.glb.apiserver.exception.ValidRuntimeException;
+import com.mileweb.glb.apiserver.validation.ValidationHolder.DogName;
 
 //@RestController()
 @Controller
@@ -56,6 +59,52 @@ public class RestDemo extends BaseController {
 	@RequestMapping(value="/valid")
 	@ResponseBody
 	public String test(@Valid Dog dog, BindingResult result) {
+		System.out.println(dog);
+		if(result.hasErrors()) {
+			System.out.println(result.getFieldErrors());
+			System.out.println(result.getGlobalErrors());
+			
+			System.out.println(result.getAllErrors());
+			
+			ObjectError e = result.getAllErrors().get(0);
+			
+			System.out.println(e.getCode() + "-" + e.getDefaultMessage());
+			
+			System.out.println(Arrays.asList(e.getCodes()));
+			System.out.println(Arrays.asList(e.getArguments()));
+			
+			throw new RuntimeException(e.getDefaultMessage());
+		}
+		
+		return "valid pass";
+	}
+	
+	@RequestMapping(value="/validgroup1")
+	@ResponseBody
+	public String validgroup1(@Validated(value=DogName.class) Dog dog, BindingResult result) {
+		System.out.println(dog);
+		if(result.hasErrors()) {
+			System.out.println(result.getFieldErrors());
+			System.out.println(result.getGlobalErrors());
+			
+			System.out.println(result.getAllErrors());
+			
+			ObjectError e = result.getAllErrors().get(0);
+			
+			System.out.println(e.getCode() + "-" + e.getDefaultMessage());
+			
+			System.out.println(Arrays.asList(e.getCodes()));
+			System.out.println(Arrays.asList(e.getArguments()));
+			
+			throw new ValidRuntimeException(e.getDefaultMessage());
+		}
+		
+		return "valid pass";
+	}
+	
+	@RequestMapping(value="/validgroup2")
+	@ResponseBody
+	public String validgroup2(@Valid Dog dog, BindingResult result) {
 		System.out.println(dog);
 		if(result.hasErrors()) {
 			System.out.println(result.getFieldErrors());

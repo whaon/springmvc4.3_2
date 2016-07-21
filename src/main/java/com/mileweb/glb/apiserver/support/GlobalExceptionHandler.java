@@ -13,6 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.mileweb.glb.apiserver.exception.BizException;
 import com.mileweb.glb.apiserver.exception.BizRuntimeException;
 import com.mileweb.glb.apiserver.exception.ExceptionWrapper;
+import com.mileweb.glb.apiserver.exception.ValidRuntimeException;
 import com.mileweb.glb.apiserver.util.ApplicationContextUtil;
 
 /**
@@ -41,6 +42,10 @@ public class GlobalExceptionHandler implements HandlerExceptionResolver {
             	String i18nMsg = ApplicationContextUtil.getApplicationContext().getMessage(msg, me.getParam(), LocaleContextHolder.getLocale());
             	model.put("msg", i18nMsg);
         	}
+        } else if(e instanceof ValidRuntimeException) {
+        	ValidRuntimeException me = (ValidRuntimeException) e;
+        	model.put("code", ExceptionWrapper.DEFAULT_VALID_CODE);  
+        	model.put("msg", me.getMessage());
         } else {
         	setModel(ExceptionWrapper.DEFAULT_CODE, e.getMessage(), model);
         }
