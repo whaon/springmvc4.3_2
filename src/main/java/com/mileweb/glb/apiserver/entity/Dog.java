@@ -2,19 +2,20 @@ package com.mileweb.glb.apiserver.entity;
 
 import java.util.Date;
 
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.mileweb.glb.apiserver.validation.DogNameDuplicate;
+import com.mileweb.glb.apiserver.validation.ValidationHolder.DogName;
 
 public class Dog {
 
-	@NotNull(message="not allow null")
-	@JsonProperty("input_name")
+	//@NotNull(message="not allow null")
+	//@JsonProperty("input_name")
+	//@DogNameDuplicate(groups={DogName.class}, message="{org.hibernate.validator.constraints.Email.message}", init = {"dog", "mydog"})
+	@DogNameDuplicate(groups={DogName.class}, message="{msg}", init = {"dog", "mydog"})
 	private String name;
 	private int age;
 	@JsonFormat(pattern="yyyy-MM-dd")

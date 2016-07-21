@@ -12,6 +12,12 @@
 		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller" />
 	</context:component-scan>
 	
+	<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">
+		<property name="useSuffixPatternMatch" value="false"></property>
+		<!-- <property name="useRegisteredSuffixPatternMatch" value="false"></property>
+		<property name="useTrailingSlashMatch" value="true"></property> -->
+	</bean>
+	
 	<mvc:annotation-driven>
 		<mvc:message-converters>
 	        <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">

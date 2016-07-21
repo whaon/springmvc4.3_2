@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,15 +27,17 @@ import com.mileweb.glb.apiserver.entity.Dog;
 import com.mileweb.glb.apiserver.entity.SuccessInfo;
 import com.mileweb.glb.apiserver.exception.BizRuntimeException;
 import com.mileweb.glb.apiserver.exception.ExceptionWrapper;
+import com.mileweb.glb.apiserver.exception.ValidRuntimeException;
+import com.mileweb.glb.apiserver.validation.ValidationHolder.DogName;
 
 //@RestController()
 @Controller
 @RequestMapping("/restdemo")
 public class RestDemo extends BaseController {
-
+	
 	@RequestMapping(value="/putjson/{cname}", method={RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT})
-	@ResponseBody
-	public Dog test(@RequestBody(required=false) @Valid Dog dog, BindingResult result, @PathVariable("cname") String key) {
+	//@ResponseBody
+	public void test(@RequestBody(required=false) @Valid Dog dog, BindingResult result, @PathVariable("cname") String key) {
 		
 		if(result.hasErrors()) {
 			System.out.println(result.getFieldErrors());
@@ -49,12 +52,59 @@ public class RestDemo extends BaseController {
 		d.setBirth(new Date());
 		d.setName("doggy");
 		
-		return d;
+		this.flushJson(d);
+		
 	}
 	
 	@RequestMapping(value="/valid")
 	@ResponseBody
 	public String test(@Valid Dog dog, BindingResult result) {
+		System.out.println(dog);
+		if(result.hasErrors()) {
+			System.out.println(result.getFieldErrors());
+			System.out.println(result.getGlobalErrors());
+			
+			System.out.println(result.getAllErrors());
+			
+			ObjectError e = result.getAllErrors().get(0);
+			
+			System.out.println(e.getCode() + "-" + e.getDefaultMessage());
+			
+			System.out.println(Arrays.asList(e.getCodes()));
+			System.out.println(Arrays.asList(e.getArguments()));
+			
+			throw new RuntimeException(e.getDefaultMessage());
+		}
+		
+		return "valid pass";
+	}
+	
+	@RequestMapping(value="/validgroup1")
+	@ResponseBody
+	public String validgroup1(@Validated(value=DogName.class) Dog dog, BindingResult result) {
+		System.out.println(dog);
+		if(result.hasErrors()) {
+			System.out.println(result.getFieldErrors());
+			System.out.println(result.getGlobalErrors());
+			
+			System.out.println(result.getAllErrors());
+			
+			ObjectError e = result.getAllErrors().get(0);
+			
+			System.out.println(e.getCode() + "-" + e.getDefaultMessage());
+			
+			System.out.println(Arrays.asList(e.getCodes()));
+			System.out.println(Arrays.asList(e.getArguments()));
+			
+			throw new ValidRuntimeException(e.getDefaultMessage());
+		}
+		
+		return "valid pass";
+	}
+	
+	@RequestMapping(value="/validgroup2")
+	@ResponseBody
+	public String validgroup2(@Valid Dog dog, BindingResult result) {
 		System.out.println(dog);
 		if(result.hasErrors()) {
 			System.out.println(result.getFieldErrors());
@@ -97,6 +147,8 @@ public class RestDemo extends BaseController {
 	@ResponseBody
 	public SuccessInfo suc(HttpServletRequest request) {
 		
+		System.out.println(request.hashCode());
+		
 		Dog d = new Dog();
 		d.setBirth(new Date());
 		
@@ -106,11 +158,20 @@ public class RestDemo extends BaseController {
 		d.setName(name);
 		System.out.println(name);
 		
-		SuccessInfo info = this.getI18NSuccessInfo();
+		SuccessInfo info = this.getDefaultSuccessInfo();
 		
 		info.setEventId(8);
 		
+		
+		
 		return info;
+	}
+	
+	@RequestMapping(value="/suc2")
+	public void suc() {
+		int eventId = 8;
+		
+		super.flushDefaultSuccess(eventId);
 	}
 	
 	@RequestMapping(value="/error", method={RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT})
@@ -124,6 +185,8 @@ public class RestDemo extends BaseController {
 			}
 		} else if("0".equals(isWrap)) {
 			int i = 1/0;
+		} else if("2".equals(isWrap)) {
+			throw new BizRuntimeException("my error");
 		}
 		
 		return "show exception";

@@ -12,6 +12,7 @@ public enum ExceptionWrapper {
 	private String code;
 	
 	public static final String DEFAULT_CODE = "0";
+	public static final String DEFAULT_VALID_CODE = "1";
 	
 	private ExceptionWrapper() {
 		int index = this.name().lastIndexOf("_");
