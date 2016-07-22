@@ -11,8 +11,20 @@
 	</context:component-scan>
 	
 	<bean class=" com.mileweb.glb.apiserver.support.PropertyPlaceholderConfigurerHolder">
-		<property name="locations" value="classpath:apiserver.properties" />
+		<property name="locations">
+			<list>
+				<value>classpath:apiserver.properties</value>
+			</list>
+		</property>
 	</bean>
+	
+	<bean id="userProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">  
+        <property name="locations">  
+            <list>  
+                <value>classpath:user.properties</value>
+            </list>  
+        </property>  
+    </bean> 
 	
 	<!-- <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close"> 
       基本属性 url、user、password

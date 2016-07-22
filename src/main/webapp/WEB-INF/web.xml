@@ -4,7 +4,7 @@
 
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
-		<param-value>classpath*:/applicationContext.xml</param-value>
+		<param-value>classpath:/applicationContext.xml</param-value>
 	</context-param>
 
 	<listener>
@@ -32,6 +32,16 @@
 	
 	<filter-mapping>
 		<filter-name>EncodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+	<filter>
+		<filter-name>AuthFilter</filter-name>
+		<filter-class>com.mileweb.glb.apiserver.filter.AuthFilter</filter-class>
+	</filter>
+	
+	<filter-mapping>
+		<filter-name>AuthFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
