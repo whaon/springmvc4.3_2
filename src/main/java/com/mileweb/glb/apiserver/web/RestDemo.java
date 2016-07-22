@@ -7,6 +7,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -215,6 +217,11 @@ public class RestDemo extends BaseController {
 	public String get(@PathVariable String name, Model model) {
 		System.out.println(name);
 		return "demo";
+	}
+	
+	@GetMapping("/401")
+	public ResponseEntity get401() {
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).header("WWW-Authenticate", "Basic realm=\"GLB2.0 API SERVER\"").body("401 not");
 	}
 
 }
